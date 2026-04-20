@@ -2,65 +2,67 @@ pipeline {
     agent any
 
     triggers {
-        // Polls the Git repository every minute for changes. 
-        // For production, consider using 'githubPush()' or webhooks instead.
-        pollSCM('* * * * *') 
+        // Automatically triggers when code is pushed to GitHub via webhook
+        githubPush()
     }
 
     environment {
-        DOCKER_IMAGE = "midunavarshini30/news-hub-aggregator"
-        DOCKER_TAG = "v${env.BUILD_NUMBER}"
-        DOCKER_LATEST = "midunavarshini30/news-hub-aggregator:latest"
+        COMPOSE_PROJECT_NAME = "news-aggregator"
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
 
-        stage('Prepare Environment') {
-            steps {
-                writeFile file: '.env.production', text: '''MONGODB_URI=mongodb+srv://midunavarshini342_db_user:Xr9UZc7OfDqvqJQ5@cluster0.doppz3y.mongodb.net/newshub?appName=Cluster0
-JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345
-NEXT_PUBLIC_API_URL=http://localhost:3000
-'''
-            }
-        }
-
-        stage('Build Docker Image') {
+        stage('Clean') {
             steps {
                 script {
-                    // This ensures docker commands work if configured as a tool
-                    bat "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
-                    bat "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_LATEST}"
+                    // Stop and remove existing containers (ignore errors if not running)
+                    bat(returnStatus: true, script: 'docker compose stop app mongo')
+                    bat(returnStatus: true, script: 'docker compose rm -f app mongo')
                 }
             }
         }
 
-
-
-        stage('Run Locally (Deployment Simulation)') {
+        stage('Prepare') {
             steps {
                 script {
-                    bat returnStatus: true, script: "docker stop news-container"
-                    bat returnStatus: true, script: "docker rm news-container"
-                    bat "docker run -d -p 3000:3000 --name news-container ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    // Write the .env.production file with secrets
+                    writeFile file: '.env.production', text: """MONGODB_URI=mongodb+srv://midunavarshini342_db_user:Xr9UZc7OfDqvqJQ5@cluster0.doppz3y.mongodb.net/newshub?appName=Cluster0
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345
+NEXT_PUBLIC_API_URL=http://localhost:3000
+NODE_ENV=production
+"""
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    // Build the Docker image using docker compose
+                    bat 'docker compose build app'
+                }
+            }
+        }
+
+        stage('Run') {
+            steps {
+                script {
+                    // Start the app container in detached mode
+                    bat 'docker compose up -d app'
+                    echo 'App is running at http://localhost:3000'
                 }
             }
         }
     }
 
     post {
-        always {
-            cleanWs()
-        }
         success {
-            echo "Pipeline successfully completed!"
+            echo 'Pipeline completed successfully! App is live at http://localhost:3000'
         }
         failure {
-            echo "Pipeline failed! Please check the logs."
+            echo 'Pipeline failed. Check the logs above for errors.'
+            // Cleanup on failure
+            bat(returnStatus: true, script: 'docker compose down')
         }
     }
 }
