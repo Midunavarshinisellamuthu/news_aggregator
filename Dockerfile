@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:18-slim AS builder
 
 WORKDIR /app
 
@@ -17,7 +17,7 @@ RUN cp .env.production .env.local 2>/dev/null || true
 RUN npm run build
 
 # Stage 2: Production Runner
-FROM node:18-alpine AS runner
+FROM node:18-slim AS runner
 
 WORKDIR /app
 
