@@ -12,8 +12,8 @@ pipeline {
             steps {
                 script {
                     // Stop and remove old containers (ignore errors if not running)
-                    sh 'docker compose stop app mongo || true'
-                    sh 'docker compose rm -f app mongo || true'
+                    sh 'docker compose stop app mongo prometheus grafana || true'
+                    sh 'docker compose rm -f app mongo prometheus grafana || true'
                 }
             }
         }
@@ -44,7 +44,7 @@ NODE_ENV=production
             steps {
                 script {
                     // Start app and mongo in detached mode
-                    sh 'docker compose up -d app mongo'
+                    sh 'docker compose up -d app mongo prometheus grafana'
                     echo 'App is running at http://localhost:3000'
                 }
             }
