@@ -1,6 +1,25 @@
 version: '3.9'
 
 services:
+
+  # ─── Jenkins ────────────────────────────────────────────────────────────────
+  jenkins:
+    build:
+      context: .
+      dockerfile: Dockerfile.jenkins
+    container_name: jenkins
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    volumes:
+      # Persist Jenkins data
+      - jenkins_home:/var/jenkins_home
+      # Mount host Docker socket so Jenkins can run docker commands
+      - /var/run/docker.sock:/var/run/docker.sock
+    user: root
+
+  # ─── Next.js App ────────────────────────────────────────────────────────────
   app:
     build:
       context: .
@@ -16,6 +35,7 @@ services:
     depends_on:
       - mongo
 
+  # ─── MongoDB ────────────────────────────────────────────────────────────────
   mongo:
     image: mongo:6
     container_name: news-mongo
@@ -26,4 +46,5 @@ services:
       - mongo_data:/data/db
 
 volumes:
+  jenkins_home:
   mongo_data:
