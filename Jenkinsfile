@@ -20,6 +20,15 @@ pipeline {
             }
         }
 
+        stage('Prepare Environment') {
+            steps {
+                writeFile file: '.env.production', text: '''MONGODB_URI=mongodb+srv://midunavarshini342_db_user:Xr9UZc7OfDqvqJQ5@cluster0.doppz3y.mongodb.net/newshub?appName=Cluster0
+JWT_SECRET=your_super_secret_jwt_key_change_this_in_production_12345
+NEXT_PUBLIC_API_URL=http://localhost:3000
+'''
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
