@@ -8,12 +8,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Midunavarshinisellamuthu/news_aggregator.git'
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 sh "docker build -t $IMAGE_NAME:$IMAGE_TAG ."
@@ -25,7 +19,9 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
                     usernameVariable: 'USER',
                     passwordVariable: 'PASS')]) {
-                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                    sh '''
+                    echo "$PASS" | docker login -u "$USER" --password-stdin
+                    '''
                 }
             }
         }
@@ -38,11 +34,11 @@ pipeline {
 
         stage('Run Container') {
             steps {
-                sh """
+                sh '''
                 docker stop news-container || true
                 docker rm news-container || true
                 docker run -d -p 3000:3000 --name news-container $IMAGE_NAME:$IMAGE_TAG
-                """
+                '''
             }
         }
     }
