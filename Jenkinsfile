@@ -39,30 +39,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3000
             }
         }
 
-        stage('Login to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'USER',
-                    passwordVariable: 'PASS')]) {
-                    bat "echo %PASS%| docker login -u %USER% --password-stdin"
-                }
-            }
-        }
 
-        stage('Push Image') {
-            steps {
-                script {
-                    bat "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
-                    bat "docker push ${DOCKER_LATEST}"
-                }
-            }
-        }
-
-        stage('Cleanup Local Images') {
-            steps {
-                bat returnStatus: true, script: "docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_LATEST}"
-            }
-        }
 
         stage('Run Locally (Deployment Simulation)') {
             steps {
