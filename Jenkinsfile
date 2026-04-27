@@ -11,9 +11,8 @@ pipeline {
         stage('Clean') {
             steps {
                 script {
-                    // Stop and remove old containers (ignore errors if not running)
-                    sh 'docker compose stop app mongo prometheus grafana || true'
-                    sh 'docker compose rm -f app mongo prometheus grafana || true'
+                    // Stop and remove old containers by their hardcoded names to avoid project name conflicts
+                    sh 'docker rm -f news-prometheus news-mongo news-container news-grafana || true'
                 }
             }
         }
