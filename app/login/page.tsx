@@ -41,7 +41,7 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center px-4">
       <Toaster richColors />
-      
+
       <div className="w-full max-w-md">
         <Card className="border border-slate-200 dark:border-slate-800 shadow-xl">
           <div className="p-8">
@@ -141,7 +141,7 @@ export default function LoginPage() {
                 variant="outline"
                 className="w-full h-11 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium rounded-lg"
               >
-                Create an Account 1234
+                Create an Account.....
               </Button>
             </Link>
           </div>
