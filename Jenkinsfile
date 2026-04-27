@@ -34,8 +34,8 @@ NODE_ENV=production
         stage('Build') {
             steps {
                 script {
-                    // Build the app Docker image
-                    sh 'docker compose build app'
+                    // Build the app and prometheus Docker images
+                    sh 'docker compose build app prometheus'
                 }
             }
         }
