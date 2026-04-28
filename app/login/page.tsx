@@ -129,7 +129,7 @@ export default function LoginPage() {
               </div>
               <div className="relative flex justify-center text-sm">
                 <span className="px-2 bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400">
-                  New to NewsHub?
+                  New to NewsHub????
                 </span>
               </div>
             </div>
@@ -141,7 +141,7 @@ export default function LoginPage() {
                 variant="outline"
                 className="w-full h-11 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium rounded-lg"
               >
-                Create an Account...
+                Create an Account1234
               </Button>
             </Link>
           </div>
