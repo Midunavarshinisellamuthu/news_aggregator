@@ -141,7 +141,7 @@ export default function LoginPage() {
                 variant="outline"
                 className="w-full h-11 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 font-medium rounded-lg"
               >
-                Create an Account1234
+                Create an Account
               </Button>
             </Link>
           </div>
